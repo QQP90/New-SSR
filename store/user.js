@@ -35,12 +35,25 @@ export const actions = {
             method:"POST",
             data
         }).then(res=>{
-            // console.log(res.data);
+            console.log(res.data);
             commit("setUserInfo", res.data);
             Promise.resolve()
         })
+    },
+    // 用户注册
+    register({commit},data){
+        return this.$axios({
+            url:"/accounts/register",
+            method:"POST",
+            data
+        }).then(res=>{
+            return res
+        })
     }
 }
+
+
+
 // export const actions = {
 //     login({commit},data){
 //         console.log(data);

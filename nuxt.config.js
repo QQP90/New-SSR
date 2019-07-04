@@ -5,7 +5,7 @@ export default {
   ** Headers of the page
   */
   head: {
-    title: '闲云旅游网',//修改title
+    title: '世界最强旅游网站',//修改title
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -34,7 +34,8 @@ export default {
   plugins: [
     '@/plugins/element-ui',
     // 调用插件，本地存储localstorage
-    { src: '@/plugins/localStorage', ssr: false }
+    { src: '@/plugins/localStorage', ssr: false },
+    '@/plugins/axios' // 调用插件
   ],
   /*
   ** Nuxt.js modules

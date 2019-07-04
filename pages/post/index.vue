@@ -1,5 +1,7 @@
 <template>
-    <div>旅游攻略</div>
+    <div>
+        旅游首页
+    </div>
 </template>
 
 <script>

@@ -23,10 +23,10 @@
                 <el-dropdown v-if="$store.state.user.userInfo.token">
                     <el-row type="flex" align="middle" class="el-dropdown-link">
                         <nuxt-link to="#">
-                            <img src="$axios.defaults.baseURL + $store.state.user.userInfo.user.defaultAvatar"/>
-                            用户名
+                            <img :src="$axios.defaults.baseURL + $store.state.user.userInfo.user.defaultAvatar"/>
+                           
                         </nuxt-link>
-                         <span>{{$store.state.user.uerInfo.user.nickname}}</span>
+                         <span>{{$store.state.user.userInfo.user.nickname}}</span>
                         <i class="el-icon-caret-bottom el-icon--right"></i>
                     </el-row>
                     <el-dropdown-menu slot="dropdown">
@@ -51,6 +51,9 @@
 <script>
 
 export default {
+    // mounted(){
+    //     // console.log(this.$store.state.user.userInfo.user);
+    // },
     methods:{
         // 退出登录
         handleLogout(){
@@ -58,7 +61,7 @@ export default {
             if(confirm("确认退出吗")){
                 this.$store.commit("user/clearUserInfo")
                 setTimeout(() => {
-                    this.$router.push("/login")
+                    this.$router.push("/user/login")
                 }, 1000);
                 
             }

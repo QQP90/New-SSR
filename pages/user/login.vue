@@ -13,6 +13,8 @@
                 
                 <!-- 登录功能组件 -->
                 <LoginForm v-if="current == 0"/>
+                <!-- 注册组件功能 -->
+                <RegisterForm v-if="current == 1"/>
             </div> 
                   
         </el-row>
@@ -23,9 +25,12 @@
 
 <script>
 import LoginForm from "@/components/user/loginForm.vue"
+import RegisterForm from "@/components/user/register.vue"
+
 export default {
     components:{
-        LoginForm
+        LoginForm,
+        RegisterForm
     },
     data(){
         return{
