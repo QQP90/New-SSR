@@ -37,9 +37,8 @@
                 align="middle" 
                 class="search-input">
                     <input 
-                    :placeholder="options[currentOption].placeholder"
-                    v-model="inputValue" />
-                    <i class="el-icon-search" @click=handleSearch></i>
+                    :placeholder="options[currentOption].placeholder"/>
+                    <i class="el-icon-search" ></i>
                 </el-row>
 
             </div>
@@ -69,10 +68,7 @@ export default {
             ],
             
             // 搜索框当前高亮的tab栏
-            currentOption: 0,
-
-            // input 值
-            inputValue:"",
+            currentOption: 0
     }
   },
   mounted(){
@@ -86,16 +82,15 @@ export default {
     })
   },
   methods: {
-      handleOption(index){
-          this.currentOption = index;
-          if(index == 2) {
-              this.$router.push("/air");
-          }
-      },
-      handleSearch(){
-          console.log("handleSearch");
-      }
-  },
+        // 点击tab的事件
+        handleOption(index){
+            this.currentOption = index;
+
+            if(index == 2){
+                this.$router.push("/air");
+            }
+        }
+    },
 }
 </script>
 

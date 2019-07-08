@@ -5,7 +5,7 @@ export default {
   ** Headers of the page
   */
   head: {
-    title: '世界最强旅游网站',//修改title
+    title: "世界上最好用的旅游网站 - 闲云旅游",
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -13,8 +13,8 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', type: 'text/css', 
-      href: '//at.alicdn.com/t/font_1168872_ehvuah8v57g.css' } // 新增全局字体样式
+      // 导入图片样式
+      { rel: 'stylesheet', type: 'text/css', href: '//at.alicdn.com/t/font_1168872_ehvuah8v57g.css' }
     ]
   },
   /*
@@ -26,14 +26,13 @@ export default {
   */
   css: [
     'element-ui/lib/theme-chalk/index.css',
-  'assets/main.css'//新增自定义页面过度样式
+    'assets/main.css'
   ],
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
     '@/plugins/element-ui',
-    // 调用插件，本地存储localstorage
     { src: '@/plugins/localStorage', ssr: false },
     '@/plugins/axios' // 调用插件
   ],
@@ -43,14 +42,14 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    
   ],
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
-  axios: {  
-    baseURL: "http://127.0.0.1:1337" // 新增axios默认请求路径 	
+  axios: {
+    baseURL: "http://127.0.0.1:1337",
+	 // baseURL: "http://127.0.0.1:1337"
   },
   /*
   ** Build configuration

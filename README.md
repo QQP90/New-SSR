@@ -1,6 +1,6 @@
 # xianyun
 
-> My glorious Nuxt.js project
+> My splendiferous Nuxt.js project
 
 ## Build Setup
 

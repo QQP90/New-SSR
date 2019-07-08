@@ -5,20 +5,25 @@
             <!-- 顶部过滤列表 -->
             <div class="flights-content">
                 <!-- 过滤条件 -->
-               <FlightsFilters
-              :data="cacheFlghtsData"
-            @setDataList="setDataList"/>
+                <div>
+                    <FlightsFilters :data="cacheFlightsData" 
+                @setDataList="setDataList"/>
+                </div>
                 
                 <!-- 航班头部布局 -->
-                <FlightsListHead/>
-
-                    <!-- 航班信息 -->
+                <div>
+                    <FlightsListHead/>
+                </div>
+                
+                
+                <!-- 航班信息 -->
                 <div>
                     <!-- 航班列表 -->
-                    <FlightsItem v-for="(item,index) in dataList"
+                    <FlightsItem v-for="(item, index) in dataList" 
                     :key="index"
-                    :data="item"/>  
-                     <!-- 分页 -->
+                    :data="item"/>
+
+                    <!-- 分页 -->
                     <el-row type="flex" justify="center" style="margin-top:10px;">
                         <!-- size-change：切换条数时候触发 -->
                         <!-- current-change：选择页数时候触发 -->
@@ -36,13 +41,12 @@
                         </el-pagination>
                     </el-row>
                 </div>
-               
             </div>
+
             <!-- 侧边栏 -->
             <div class="aside">
-                <FlightsAside
-                :data="cacheFlghtsData"/>
                 <!-- 侧边栏组件 -->
+                <FlightsAside />
             </div>
         </el-row>
     </section>
@@ -55,86 +59,74 @@ import FlightsListHead from "@/components/air/flightsListHead.vue"
 import FlightsItem from "@/components/air/flightsItem.vue"
 import FlightsFilters from "@/components/air/flightsFilters.vue"
 import FlightsAside from "@/components/air/flightsAside.vue"
-
 export default {
-    components:{
-        FlightsListHead,
-        FlightsItem,
-        FlightsFilters,
-        FlightsAside
-    },
     data(){
         return {
             flightsData: {
-                 // 默认机票列表
                 flights: [],
                 info: {},
                 options: {}
             }, // 航班总数据
-             cacheFlghtsData: {
-                 // 默认机票列表
-                flights: [],
+             cacheFlightsData: { // 缓存一份数据，只会修改一次
+                flights: [],     
                 info: {},
                 options: {}
-            }, // 航班总数据
-            dataList:[],// 航班列表数据，用于循环flightsItem组件，单独出来是因为要分页
-            pageSize:5,//当前条数
-            pageIndex:1//当前页数
+            }, 
+            dataList: [],     // 航班列表数据，用于循环flightsItem组件，单独出来是因为要分页
+            pageIndex: 1, // 当前页数
+            pageSize: 5,  // 显示条数
         }
     },
-    // 监听`url`的变化
-     watch: {
-        $route(){
-             this.getdata();
-        }
-    },
-    methods:{
-        // 设置dataList
-        // arr是展示的新数据，该方法将会传递给过滤组件使用
+    methods: {
+        // 获取航班总数据
+        getData(){
+            this.$axios({
+                url: `airs`,
+                params: this.$route.query // 来自URL的5个参数
+            }).then(res => {
+                this.flightsData = res.data;
+                // this.dataList = this.flightsData.flights;
+                this.cacheFlightsData = {...res.data};
+                this.setDataList();
+            });
+        },
+        // 设置dataList数据
         setDataList(arr){
-             // 如果有新数据从第一页开始显示
             if(arr){    
                 this.pageIndex = 1;
                 this.flightsData.flights = arr;
                 this.flightsData.total = arr.length;
             }
-            const start = (this.pageIndex-1)*this.pageSize
-            const end = this.pageIndex*this.pageSize
-            this.dataList = this.flightsData.flights.slice(start,end)
+            const start = (this.pageIndex - 1) * this.pageSize; 
+            const end = start + this.pageSize; 
+            this.dataList = this.flightsData.flights.slice(start, end);
         },
-
-        getdata(){
-            this.$axios({
-                url:'/airs',
-                params:this.$route.query
-            }).then(res=>{
-             
-                this.flightsData = res.data
-
-                // 缓存一份新的数据，这个列表不会被修改
-                // 而flightsData会被修改
-                this.cacheFlghtsData={...res.data}
-               this.setDataList()
-            })
-        },
-        // 切换条数时触发
         handleSizeChange(value){
             this.pageSize = value;
-            this.getdata()
-       
+            this.pageIndex = 1;
+            this.setDataList();
         },
 
         // 切换页数时触发
         handleCurrentChange(value){
             this.pageIndex = value;
-        //    
-            const start = (this.pageIndex-1)*this.pageSize
-            const end = this.pageIndex*this.pageSize
-            this.dataList = this.flightsData.flights.slice(start,end)
-        },
+            this.setDataList();
+        }
     },
+
     mounted(){
-        this.getdata()
+        this.getData();
+    },
+    watch: {
+        $route(){
+             this.getData();
+        }
+    },
+    components:{
+        FlightsListHead,
+        FlightsItem,
+        FlightsFilters,
+        FlightsAside
     }
 }
 </script>

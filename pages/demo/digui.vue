@@ -1,27 +1,11 @@
 <template>
-    <div style="padding:50px;">
-        <h2>测试组件的递归</h2>
-
-        <!-- <div v-for="(item, index) in list" :key="index" class="item">
-            {{item.type}}
-
-            <div v-for="(item2, index2) in item.children" :key="index2">
-                {{item2.type}}
-
-                 <div v-for="(item3, index3) in item2.children" :key="index3">
-                    {{item3.type}}
- 
-                </div>
-            </div>
-        </div> -->
-
+    <div>
         <Digui :data="list"/>
     </div>
 </template>
 
 <script>
-import Digui from "./digui.vue";
-
+import Digui from "@/components/demo/digui.vue"
 export default {
     components: {
         Digui

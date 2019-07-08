@@ -2,7 +2,7 @@
     <div class="container">
         <div class="main">
             <div class="pay-title">
-                支付总金额 <span class="pay-price">￥ {{parice}}</span>
+                支付总金额 <span class="pay-price">￥ {{$store.state.air.allPrice}}</span>
             </div>
             <div class="pay-main">
                 <h4>微信支付</h4>
@@ -17,7 +17,7 @@
                         <p>扫描二维码支付</p>
                     </div>
                     <div class="pay-example">
-                          <img src="http://157.122.54.189:9093/images/wx-sweep2.jpg" alt="">
+                        <img src="http://157.122.54.189:9093/images/wx-sweep2.jpg" alt="">
                     </div>
                 </el-row>
             </div>
@@ -26,20 +26,18 @@
 </template>
 
 <script>
- // 生成二维码的包
 import QRCode from "qrcode";
 export default {
-   data(){
-       return {
-           parice:0,
-             timer: null
-       }
+      data(){
+        return {
+            timer: null
+        }
     },
     methods: {
         // 检查付款状态
         async isPay(data){
             const {id} = this.$route.query; 
-            const {user: {userInfo}} = this.$store.state;
+            const {api, user: {userInfo}} = this.$store.state;
 
             return this.$axios({
                 url: `airorders/checkpay`,
@@ -69,10 +67,6 @@ export default {
             })
         }
     },
-
-    destroyed(){
-        clearInterval(this.timer)
-    },
      mounted(){
         // 这个处理方法是有缺陷的，不100%准确
 		// userInfo在页面加载完才赋值
@@ -87,16 +81,15 @@ export default {
                     Authorization: `Bearer ${userInfo.token}`
                 }
             }).then(res => {
-                // console.log(res.data);
                 // price 用于展示
                 const {payInfo, price} = res.data;
-                this.parice = price
 
                 // 生成二维码到canvas
                 const stage = document.querySelector("#qrcode-stage");
                 QRCode.toCanvas(stage, payInfo.code_url, {
                     width: 200
                 }); 
+
                 this.timer = setInterval(async () => {
                     const isResolve = await this.isPay(payInfo);
                     console.log(isResolve)
@@ -107,7 +100,10 @@ export default {
                 }, 3000)
             })
         }, 200);
-    }
+    },
+    destroyed(){
+        clearInterval(this.timer)
+    },
 }
 </script>
 

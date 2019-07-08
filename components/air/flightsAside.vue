@@ -16,26 +16,21 @@
                 </el-col>
             </el-row>
             <p class="service-tel">
-                免费客服电话：40063456782
+                免费客服电话：4006345678转2
             </p>
         </div>
 
         <div class="history">
             <h5>历史查询</h5>
-            <nuxt-link 
-            :to="`/air/flights?departCity=${item.departCity}
-           &departCode=${item.departCode}&destCity=${item.destCity}
-           &destCode=${item.destCode}&departDate=${item.departDate}`"
-            v-for="(item,index) in history"
-            :key="index"
-          >
+            <nuxt-link :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"
+            v-for="(item, index) in airsLog"
+            :key="index">
                 <el-row type="flex" 
                 justify="space-between" 
                 align="middle"
-                class="history-item"
-                >
+                class="history-item">
                     <div class="air-info">
-                        <div class="to-from"> {{item.departCity}} - {{item.destCity}}</div>
+                        <div class="to-from">{{item.departCity}} - {{item.destCity}}</div>
                         <p>{{item.departDate}}</p>
                     </div>
                     <span>选择</span>
@@ -49,12 +44,12 @@
 export default {
     data(){
         return {
-            history:[]
+            airsLog: []
         }
     },
     mounted(){
-        this.history = JSON.parse(localStorage.getItem("airs")||`[]`)
-        // console.log(this.history)
+        // 获取历史记录
+        this.airsLog = JSON.parse(localStorage.getItem("airs") || `[]`);
     }
 }
 </script>

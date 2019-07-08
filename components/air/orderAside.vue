@@ -31,7 +31,7 @@
         </el-row>
         <el-row type="flex" justify="space-between" class="info-bar">
             <span>成人机票</span>
-            <span>￥{{data.seat_infos.org_settle_price}}</span> 
+            <span>￥{{data.seat_infos.org_settle_price}}</span>
             <span>x1</span>
         </el-row>
         <el-row type="flex" justify="space-between" class="info-bar">
@@ -41,7 +41,7 @@
         </el-row>
         <el-row type="flex" justify="space-between" align="middle" class="info-bar">
             <span>应付总额：</span>
-            <span class="price">￥{{allPrice}} </span>
+            <span class="price">￥ {{allPrice}} </span>
         </el-row>           
     </div>
 </template>
@@ -53,12 +53,15 @@ export default {
             type: Object,
             default: {}
         },
+        // 总金额
         allPrice: {
             type: Number,
             default: 0
         }
     },
-
+    mounted(){
+        // console.log(this.data);
+    },
     computed: {
         rankTime(){
             // 数据还未请求回来

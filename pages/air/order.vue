@@ -3,17 +3,13 @@
         <el-row type="flex" justify="space-between">
             <!-- 订单表单 -->
             <div class="main">
-                <!-- 传值，在Orderform组件中通过事件传递，来给data中的infoData赋值 -->
-                <OrderForm 
-                
-                @setInfoData="setInfoData"
-                @setAllPrice="setAllPrice"/>
+                <OrderForm :data="infoData" @setAllPrice="setAllPrice"/>
             </div>
 
             <!-- 侧边栏 -->
-            <OrderAside
-            :data="infoData"
-            :allPrice="allPrice"/>
+            <div class="aside">
+                 <OrderAside :data="infoData" :allPrice="allPrice"/>
+            </div>
         </el-row>
     </div>
 </template>
@@ -21,37 +17,40 @@
 <script>
 import OrderForm from "@/components/air/orderForm.vue";
 import OrderAside from "@/components/air/orderAside.vue";
+
 export default {
-    // 组件
-    components:{
-        OrderForm,
-        OrderAside
-    },
-    // data
     data(){
         return {
             // 机票信息
-            infoData:{
-                // 没有保险初始化，页面已加载就找不到insurances，就会出现报错  
-                 insurances: [], // 初始化保险数据
-                 seat_infos: {}
+            infoData: {
+                insurances: [], // 初始化保险数据
+                seat_infos: {}
             },
-            allPrice:0
+            allPrice: 0
         }
     },
-    // 方法
-    methods:{
-        setInfoData(data){
-            this.infoData=data
-            // console.log(this.infoData);
-        },
+    mounted(){
+        // console.log(this.$route);
+        const {query} = this.$route;
+
+        this.$axios({
+            url: `airs/${query.id}`,
+            params: {
+                seat_xid: query.seat_xid
+            }
+        }).then(res => {
+            this.infoData = res.data;
+        })
+    },
+    methods: {
         setAllPrice(price){
             this.allPrice = price;
+            this.$store.commit("air/setAllPrice",price);
         }
     },
-    // 页面加载
-    mounted(){
-     
+    components: {
+        OrderForm,
+        OrderAside
     }
 }
 </script>
@@ -68,4 +67,4 @@ export default {
         height: fit-content;
         border:1px #ddd solid;
     }
-</style>    
+</style>

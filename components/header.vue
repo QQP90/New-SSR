@@ -1,146 +1,127 @@
-
 <template>
+  <div class="header">
+    <!-- 中间的内容 -->
+    <el-row type="flex" justify="space-between" class="main">
+      <!-- logo -->
+      <div class="logo">
+        <nuxt-link to="/">
+          <img src="/images/logo.jpg" alt>
+        </nuxt-link>
+      </div>
 
-    <div class="header">
-        <el-row class="main" type="flex" justify="space-between">
-            <div class="logo">
-                <nuxt-link to="/">
-                    <img src="/images/logo.jpg" alt="">
-                </nuxt-link>
-            </div>
-           <!-- 菜单栏 -->
-            <el-row type="flex" class="navs">
-                <nuxt-link to="/">首页</nuxt-link>
-                <nuxt-link to="/post">旅游攻略</nuxt-link>
-                <nuxt-link to="/hotel">酒店</nuxt-link>
-                <nuxt-link to="/air">国内机票</nuxt-link>  
-            </el-row>
-           
-            <!-- 登录/用户信息 -->
-            <el-row type="flex" align="middle">
+      <!-- 菜单 -->
+      <el-row type="flex" class="navs">
+        <nuxt-link to="/">首页</nuxt-link>
+        <nuxt-link to="/post">旅游攻略</nuxt-link>
+        <nuxt-link to="/hotel">酒店</nuxt-link>
+        <nuxt-link to="/air">国内机票</nuxt-link>
+      </el-row>
 
-                <!-- 如果用户存在则展示用户信息，用户数据来自store -->
-                <el-dropdown v-if="$store.state.user.userInfo.token">
-                    <el-row type="flex" align="middle" class="el-dropdown-link">
-                        <nuxt-link to="#">
-                            <img :src="$axios.defaults.baseURL + $store.state.user.userInfo.user.defaultAvatar"/>
-                           
-                        </nuxt-link>
-                         <span>{{$store.state.user.userInfo.user.nickname}}</span>
-                        <i class="el-icon-caret-bottom el-icon--right"></i>
-                    </el-row>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>
-                           <nuxt-link to="#">个人中心</nuxt-link>
-                        </el-dropdown-item>
-                        <el-dropdown-item>
-                            <div @click="handleLogout">退出</div> 
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
+      <!-- 登录状态 -->
+      <el-row>
+        <!-- 下拉菜单 -->
+        <el-dropdown v-if="$store.state.user.userInfo.token">
+          <span class="el-dropdown-link">
+            <img src="http://157.122.54.189:9095/assets/images/avatar.jpg" alt>
 
-                <!-- 不存在用户信息展示登录注册链接 -->
-                <nuxt-link to="/user/login" class="account-link" v-else>
-                    登录 / 注册 
-                </nuxt-link>
-            </el-row>
-        </el-row>
-    </div>
+            <span>{{$store.state.user.userInfo.user.nickname}}</span>
+
+            <i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>个人中心</el-dropdown-item>
+            <el-dropdown-item>
+              <span @click="handleLogout">退出</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+
+        <div v-else class="login">
+          <nuxt-link to="/user/login">登录 / 注册</nuxt-link>
+        </div>
+      </el-row>
+    </el-row>
+  </div>
 </template>
 
 <script>
-
 export default {
-    // mounted(){
-    //     // console.log(this.$store.state.user.userInfo.user);
-    // },
-    methods:{
-        // 退出登录
-        handleLogout(){
-            // 退出弹窗
-            if(confirm("确认退出吗")){
-                this.$store.commit("user/clearUserInfo")
-                setTimeout(() => {
+  methods:{
+    handleLogout(){
+      this.$store.commit("user/clearUserInfo");
+      this.$message.warning("退出成功，正在跳转...");
+                setTimeout(()=>{
                     this.$router.push("/user/login")
-                }, 1000);
-                
-            }
-
-        }
+                },3000)
     }
-}
+  }
+  // mounted(){
+  //   console.log(this.$store.state.user.userInfo.user.nickname);
+  // }
+};
 </script>
 
 <style lang="less" scoped>
-.header{
+.header {
+  height: 60px;
+  line-height: 60px;
+  border-bottom: 1px #ddd solid;
+  box-shadow: 0 2px 2px #ddd;
+  .main {
+    width: 1000px;
     height: 60px;
-    line-height:60px;
-    background:#fff;
-    border-bottom: 1px #ddd solid;
-    box-shadow:0 3px 0 #f5f5f5;
-    box-sizing: border-box;
-    .main{
-        width:1000px;
-        margin:0 auto;
-        }
-    .logo{
-        width:156px;
-        padding-top:8px;
-        img{
-            display: block;
-            width:100%;
-        }
+    margin: 0 auto;
+    .logo {
+      margin-top: 9px;
+      width: 156px;
+      height: 43px;
+      img {
+        width: 100%;
+      }
     }
-    .navs{
-        margin: 0 20px;
-        flex:1; 
-        a{
-            padding:0 20px;
-            height: 60px;
-            display: block;
-            box-sizing: border-box;
-                &:hover,&:focus, &:active {
-                border-bottom:5px #409eff solid;
-                color:#409eff;
-            }
+    .navs {
+      flex: 1;
+      height: 60px;
+      line-height: 60px;
+      a {
+        display: block;
+        box-sizing: border-box;
+        padding: 0 20px;
+        height: 100%;
+        &:hover {
+          border-bottom: 5px solid #409eff;
+          color: #409eff;
         }
-        // /deep/ .nuxt-link-exact-active是菜单栏高亮那个的颜色
-        /deep/ .nuxt-link-exact-active{
-            background:#409eff;
-            color:#fff!important;
-        } 
-    }
-    .el-dropdown-link{
-         margin-left:20px;
-         &:hover{
-              img{
-                    border-color: #409eff;
-               }
-         }
-        a{
-            display:block;
-            img{
-                width:32px;
-                height:32px;
-                vertical-align: middle;
-                border:2px #fff solid;
-                border-radius:50px;
-            }
+      }
+      .nuxt-link-exact-active {
+        background-color: #409eff;
+        color: #fff;
+        &:hover {
+          border-bottom: none;
+          color: #fff;
         }
+      }
     }
-    .account-link{
-         font-size: 14px;
-        margin-left:10px;
-        color:#666;
-        &:hover{
-            color:#409eff;
-            text-decoration: underline;
+    .el-dropdown-link {
+      line-height: 60px;
+      img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid transparent;
+        vertical-align: middle;
+        &:hover {
+          border: 1px solid #409eff;
         }
-
+      }
     }
-
+    .login {
+      line-height: 60px;
+      &:hover {
+        color: #409eff;
+      }
+    }
+  }
 }
-   
-
-
 </style>
+

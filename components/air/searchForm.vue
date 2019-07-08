@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import moment, { relativeTimeRounding } from "moment"
+import moment from "moment";
 export default {
     data(){
         return {
@@ -64,154 +64,158 @@ export default {
                 {icon: "iconfont icondancheng", name: "单程"},
                 {icon: "iconfont iconshuangxiang", name: "往返"}
             ],
-           form: {
-                departCity: "", // 出发城市
-                departCode: "", // 出发城市代码
-                destCity: "",  // 到达城市
-                destCode: "",  // 到达城市代码
-                departDate: "", // 日期字符串
-            },
             currentTab: 0,
+            form: {
+                departCity: "",
+                departCode: "",
+                destCity: "",
+                destCode: "",
+                departDate: "",
+            }
         }
     },
     methods: {
         // tab切换时触发
         handleSearchTab(item, index){
-            if(index==1){
-                this.$confirm(`该领域还未开通，请前往App下载`, '提示', {
-                        // distinguishCancelAndClose: true,
-                        showCancelButton: false,
-                        confirmButtonText: '确定',
-                        type:"waring"
+            if(index === 1){
+               this.$confirm("目前暂不支持往返，请使用单程选票！", '提示', {
+                    confirmButtonText: '确定',
+                    showCancelButton: false,
+                    type: 'warning'
                 })
-            }
+           }
         },
         
         // 出发城市输入框获得焦点时触发
         // value 是选中的值，cb是回调函数，接收要展示的列表
-        // cd调用的时候需要传入数组，这个数组就是下拉列表的数据
-        queryDepartSearch(value , cb){
-            if(!value) {
+        queryDepartSearch(value, cb){
+          if(!value) {
                 return;
             }
-
             this.$axios({
-                url: "/airs/city?name=" + value,
-                method: "GET"
-            }).then(res => {
-                const {data} = res.data;
-                const newData = data.map(v => {
-                    return {
-                        ...v,
-                        value: v.name.replace("市", "")
-                    }
-                })
-                 // 不在下拉列表中选择，则默认选择第一项
-                this.form.departCity = newData[0].value;
-                this.form.departCode = newData[0].sort;
-                // cb函数接收的参数是数组，数据里面每一项必须是对象，然后带有value的属性
-                cb(newData);
-            });
+            url:"/airs/city",
+            method:"GET",
+            params:{name:value},
+          }).then(res=>{
+            const {data} = res.data;
+            const newData = data.map(v=>{
+              return {
+                ...v,
+                value: v.name.replace("市","")
+                }
+            })
+            // 如果用户不在下拉选项中选择，默认选择第一个
+            this.form.departCity = newData[0].value;
+            this.form.departCode = newData[0].sort;
+            cb(newData)
+          })
         },
 
         // 目标城市输入框获得焦点时触发
         // value 是选中的值，cb是回调函数，接收要展示的列表
         queryDestSearch(value, cb){
-            if(!value) {
+          if(!value) {
                 return;
             }
-            this.$axios({
-                url: "/airs/city?name=" + value,
-                method: "GET"
-            }).then(res => {
-                const {data} = res.data;
-                const newData = data.map(v => {
-                    return {
-                        ...v,
-                        value: v.name.replace("市", "")
-                    }
-                })
-                 // 不在下拉列表中选择，则默认选择第一项
-                this.form.destCity = newData[0].value;
-                this.form.destCode = newData[0].sort;
-                // cb函数接收的参数是数组，数据里面每一项必须是对象，然后带有value的属性
-                cb(newData);
-            });
-        },
+          this.$axios({
+            url:"/airs/city",
+            method:"GET",
+            params:{name:value},
+          }).then(res=>{
+            const {data} = res.data;
+            const newData = data.map(v=>{
+              return {
+                ...v,
+                value: v.name.replace("市","")
+                }
+            })
+            this.form.destCity = newData[0].value;
+            this.form.destCode = newData[0].sort;
+            cb(newData)
+          })
 
-        
+            // cb([
+            //     {value: 1},
+            //     {value: 2},
+            //     {value: 3},
+            // ]);
+        },
+       
         // 出发城市下拉选择时触发
         handleDepartSelect(item) {
-            
-            this.form.departCity=item.value
-            this.form.departCode=item.sort
+            this.form.departCity = item.value;
+            this.form.departCode = item.sort;
         },
 
         // 目标城市下拉选择时触发
         handleDestSelect(item) {
-          
-            this.form.destCity=item.value
-            this.form.destCode=item.sort
+            this.form.destCity = item.value;
+            this.form.destCode = item.sort;
         },
 
         // 确认选择日期时触发
         handleDate(value){
-           this.form.departDate = moment(value).format("YYYY-MM-DD")
+           this.form.departDate = moment(value).format(`YYYY-MM-DD`);
         },
 
         // 触发和目标城市切换时触发
         handleReverse(){
-            const {destCode,destCity,departCity,departCode}= this.form
-            this.form.destCity=departCity
-            this.form.destCode = departCode
-            this.form.departCode = destCode
-            this.form.departCity=destCity
+            const { departCity, departCode, destCity, destCode } = this.form;
+
+            // 到达城市赋值给出发城市
+            this.form.departCity = destCity;
+            this.form.departCode = destCode;
+
+            this.form.destCity = departCity;
+            this.form.destCode = departCode;
         },
 
         // 提交表单是触发
         handleSubmit(){
-            // 自定义规则
-            const rules = {
-                // 触发城市
-                departCity:{
-                    value:this.form.departCity,
-                    message:"请输入出发城市"
-                },
-                // 目标城市
-                  destCity:{
-                    value:this.form.destCity,
-                    message:"请输入目标城市"
-                },
-                // 日期
-                  departDate:{
-                    value:this.form.departDate,
-                    message:"请输入出发日期"
-                }
-            }
-            // 设置一个开关
-            const valid=true
-            Object.keys(rules).forEach(v=>{
-                if(!valid) return
-                if(!rules[v].value){
-                    //  如果验证里面有一个值为空，弹出警告
-                    this.$message.waring(rules[v].message)
-                    // 如果value为空就马上
-                    valid=false
-                }
-            })
-            if(!valid){
+           // 自定义规则
+          const rules = {
+              // 出发的城市数据
+              depart: {
+                  value: this.form.departCity,
+                  message: "请输入出发城市"
+              },
+              // 到达城市的数据
+              dest: {
+                  value: this.form.destCity,
+                  message: "请输入到达城市"
+              },
+              departDate: {
+                  value: this.form.departDate,
+                  message: "请输入出发日期"
+              }
+          };
+
+          // 验证的开关，如果是false代表不通过
+          let valid = true;
+          
+          // 循环验证表单的数据
+          Object.keys(rules).forEach(v => {
+              if(!valid) return;
+
+              if(!rules[v].value){
+                  this.$message.warning(rules[v].message);
+                  valid = false;
+              }
+          })
+           
+           if(!valid){
                return;
-           };
-        //    创建一个数组
-        const localAirs = JSON.parse(localStorage.getItem("airs")||`[]`)
-        //数组添加用户所输入的信息
-        localAirs.unshift(this.form)
-        //保存到本地
-        localStorage.setItem("airs",JSON.stringify(localAirs))
-            this.$router.push({
-                path: "/air/flights",
-                query: this.form
-            })   
+           }
+          //  console.log(this.form);
+          // 添加到本地存储
+          const airs = JSON.parse(localStorage.getItem('airs') || `[]`);
+          airs.unshift(this.form);
+          localStorage.setItem("airs", JSON.stringify(airs));
+           // 跳转到列表页
+           this.$router.push({
+               path: "/air/flights",
+               query: this.form
+           });
         }
     },
     mounted() {
